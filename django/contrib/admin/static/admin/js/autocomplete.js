@@ -21,11 +21,27 @@
         return this;
     };
 
-    $(function() {
+    $(function () {
         // Initialize all autocomplete widgets except the one in the template
         // form used when a new formset is added.
-        $('.admin-autocomplete').not('[name*=__prefix__]').djangoAdminSelect2();
+        $("body .admin-autocomplete")
+            .not("[name*=__prefix__]")
+            .djangoAdminSelect2();
     });
+    htmx.on("htmx:afterSettle", () => {
+        $("body .admin-autocomplete").djangoAdminSelect2();
+    });
+    $(document).on(
+        "htmx:afterSettle",
+        (function () {
+            $(".admin-autocomplete").djangoAdminSelect2();
+            // return function (event, $newFormset) {
+            //     return $newFormset
+            //         .find(".admin-autocomplete")
+            //         .djangoAdminSelect2();
+            // };
+        })(this)
+    );
 
     document.addEventListener('formset:added', (event) => {
         $(event.target).find('.admin-autocomplete').djangoAdminSelect2();
