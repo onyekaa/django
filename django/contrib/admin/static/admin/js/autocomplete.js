@@ -1,31 +1,22 @@
 'use strict';
 {
     const $ = django.jQuery;
-    const init = function ($element, options) {
-        const settings = $.extend(
-            {
+
+    $.fn.djangoAdminSelect2 = function() {
+        $.each(this, function(i, element) {
+            $(element).select2({
                 ajax: {
-                    data: function (params) {
+                    data: (params) => {
                         return {
                             term: params.term,
                             page: params.page,
-                            app_label: $element.data("app-label"),
-                            model_name: $element.data("model-name"),
-                            field_name: $element.data("field-name"),
+                            app_label: element.dataset.appLabel,
+                            model_name: element.dataset.modelName,
+                            field_name: element.dataset.fieldName
                         };
-                    },
-                },
-            },
-            options
-        );
-        $element.select2(settings);
-    };
-
-    $.fn.djangoAdminSelect2 = function (options) {
-        const settings = $.extend({}, options);
-        $.each(this, function (i, element) {
-            const $element = $(element);
-            init($element, settings);
+                    }
+                }
+            });
         });
         return this;
     };
@@ -51,4 +42,8 @@
             // };
         })(this)
     );
+
+    document.addEventListener('formset:added', (event) => {
+        $(event.target).find('.admin-autocomplete').djangoAdminSelect2();
+    });
 }
